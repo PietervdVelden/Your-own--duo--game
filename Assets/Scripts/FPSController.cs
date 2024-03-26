@@ -6,12 +6,16 @@ using UnityEngine;
 
 public class FPSController : MonoBehaviour
 {
+
+    // Variables: Gravity
+    private float _gravity = -9.81f;
+    [SerializeField] private float gravityMultiplier = 3.0f;
+    private float _velocity;
+    
     public Camera playerCamera;
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
     // public float jumpPower = 7f;
-    public float gravity = 10f;
-
     public float lookSpeed = 2f;
     public float lookXLimit = 45f;
 
@@ -69,5 +73,25 @@ public class FPSController : MonoBehaviour
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
         #endregion
+
+        ApplyGravity();
     }
+
+    private void ApplyGravity()
+    {
+        if (IsGrounded() && _velocity < 0)
+        {
+            _velocity = -1f;
+        }
+        else
+        {
+            _velocity += _gravity * gravityMultiplier * Time.deltaTime;
+        }
+
+        moveDirection.y = _velocity;
+    }
+
+    private bool IsGrounded() => characterController.isGrounded;
+
 }
+
